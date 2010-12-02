@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml-stylesheet type="text/xsl" href="modx.prosilver.en.xsl"?>
+<!--For security purposes, please check: http
+://www.phpbb.com/mods/ for the latest version of this MOD. Although MODs are checked before being allowed in the MODs Database there is no guarantee that there are no security problems within the MOD. No support will be given for MODs not found within the MODs Database which can be found at http://www.phpbb.com/mods/-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.phpbb.com/mods/xml/modx-1.2.5.xsd">
+	<header>
+		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+
+		<title lang="en">Quote Post Back Link (QPBL)</title>
+		<title lang="nl">Quote Post Back Link (QPBL)</title>
+
+		<description lang="en">When a post is quoted on your forum this MOD will automatically aan a link back to the original post in the quote.</description>
+		<description lang="nl">Deze MOD voegt een link toe aan iedere quote gemaakt op het forum. Deze link, verwijst naar de orginele post.</description>
+
+		<author-group>
+			<author>
+				<realname>Erik Frèrejean</realname>
+				<username>Erik Frèrejean</username>
+				<homepage>http://www.erikfrerejean.nl</homepage>
+				<contributions-group>
+					<contributions status="current" from="2008-12-21"/>
+				</contributions-group>
+			</author>
+		</author-group>
+
+		<mod-version>2.0.0</mod-version>
+
+		<installation>
+			<level>easy</level>
+			<time>60</time>
+			<target-version>3.0.8</target-version>
+		</installation>
+
+		<history>
+			<entry>
+				<date>2010-12-02</date>
+				<rev-version>2.0.0</rev-version>
+				<changelog lang="en">
+					<change>Complete rewrite of the MOD</change>
+				</changelog>
+				<changelog lang="nl">
+					<change>MOD Volledig herschreven</change>
+				</changelog>
+			</entry>
+		</history>
+	</header>
+
+	<action-group>
+		<open src="includes/bbcode.php">
+			<edit>
+				<find><![CDATA['#\[quote(?:=&quot;(.*?)&quot;)?:$uid\]((?!\[quote(?:=&quot;]]></find>
+				<action type="replace-with"><![CDATA[
+							//-- Quote Post Back Link
+							//-- Delete:
+							/*
+ 							'#\[quote(?:=&quot;(.*?)&quot;)?:$uid\]((?!\[quote(?:=&quot;.*?&quot;)?:$uid\]).)?#ise'	=> "\$this->bbcode_second_pass_quote('\$1', '\$2')"
+							*/
+							//-- Add:
+							'#\[quote(?:=&quot;(.*?)&quot;)?(?:;p=([0-9]+))?:$uid\]((?!\[quote(?:=&quot;.*?&quot;)?(?:;p=([0-9]+))?:$uid\]).)?#ise'	=> "\$this->qpbl_bbcode_second_pass_quote('\$1', '\$2', '\$3')"
+							//-- End Quote Post Back Link]]></action>
+			</edit>
+			<edit>
+				<find>?></find>
+				<action type="before-add"><![CDATA[
+	//-- Quote Post Back Link
+	//-- Add:
+	/**
+	 * Second parse quote tag
+	 * QPBL Style
+	 */
+	public function qpbl_bbcode_second_pass_quote($username, $post_id, $quote)
+	{
+		global $cache, $db;
+		global $phpEx;
+
+		// when using the /e modifier, preg_replace slashes double-quotes but does not
+		// seem to slash anything else
+		$quote = str_replace('\"', '"', $quote);
+		$username = str_replace('\"', '"', $username);
+
+		// Cache links so that we don't have to call append sid every time
+		static $link_format = '';
+		if (empty($link_format))
+		{
+			$link_format = append_sid(generate_board_url() . '/viewtopic.' . $phpEx, array('f' => '%3$d', 't' => '%2$d', 'p' => '%1$d', '#' => 'p%1$d'));
+		}
+
+		// remove newline at the beginning
+		if ($quote == "\n")
+		{
+			$quote = '';
+		}
+
+		// See whether this post actually exists
+		$qpbl_posts = $cache->get('_qpbl');
+		if ($qpbl_posts === false || !isset($qpbl_posts[$post_id]))
+		{
+			$sql = 'SELECT post_id, topic_id, forum_id, post_subject
+				FROM ' . POSTS_TABLE . '
+				WHERE post_id = ' . $post_id;
+			$result	= $db->sql_query($sql);
+			$data	= $db->sql_fetchrow($result);
+			$db->sql_freeresult($result);
+
+			if ($data !== false)
+			{
+				$qpbl_posts[$data['post_id']] = $data;
+
+				// Cache it
+				$cache->put('_qpbl', $qpbl_posts);
+			}
+		}
+
+		// Prepare the information
+		$replace = array();
+		if ($username)
+		{
+			$replace['{USERNAME}'] = $username;
+		}
+
+		if (!empty($qpbl_posts[$post_id]))
+		{
+			$replace['{QPBL_POST}']		= vsprintf($link_format, $qpbl_posts[$post_id]);
+			$replace['{QPBL_TITLE}']	= censor_text($qpbl_posts[$post_id]['post_subject']);
+		}
+
+		// Select the correct template switch
+		$tpl = '';
+		if (sizeof($replace) == 3)
+		{
+			$tpl = 'quote_username_post_open';
+		}
+		else if (empty($replace['{USERNAME}']) && !empty($replace['{QPBL_POST}']) && !empty($replace['{QPBL_TITLE}']))
+		{
+			$tpl = 'quote_post_open';
+		}
+		else if (!empty($replace['{USERNAME}']) && empty($replace['{QPBL_POST}']) && empty($replace['{QPBL_TITLE}']))
+		{
+			$tpl = 'quote_username_open';
+		}
+		else
+		{
+			return $this->bbcode_tpl('quote_open');
+		}
+
+		return str_replace(array_keys($replace), $replace, $this->bbcode_tpl($tpl));
+	}
+	//-- End Quote Post Back Link]]></action>
+			</edit>
+		</open>
+
+		<open src="includes/message_parser.php">
+			<edit>
+				<find>'quote'			=> array('bbcode_id' => 0,</find>
+				<action type="replace-with"><![CDATA[
+			//-- Quote Post Back Link
+			//-- Delete:
+			/*
+ 			'quote'			=> array('bbcode_id' => 0,	'regexp' => array('#\[quote(?:=&quot;(.*?)&quot;)?\](.+)\[/quote\]#ise' => "\$this->bbcode_quote('\$0')")),
+			*/
+			//-- Add:
+			'quote'			=> array('bbcode_id' => 0, 'regexp' => array('#\[quote(?:=&quot;(.*?)&quot;)?(?:;p=([0-9]+))?\](.+)\[/quote\]#ise' => "\$this->bbcode_quote('\$0')")),
+			//-- End Quote Post Back Link]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[else if (preg_match('#^quote(?:=&quot;(.*?)&quot;)?]]></find>
+				<action type="replace-with"><![CDATA[
+				//-- Quote Post Back Link
+				//-- Delete:
+				/*
+ 				else if (preg_match('#^quote(?:=&quot;(.*?)&quot;)?$#is', $buffer, $m) && substr($out, -1, 1) == '[')
+				*/
+				//-- Add:
+				else if (preg_match('#^quote(?:=&quot;(.*?)&quot;)?(?:;p=([0-9]+))?$#is', $buffer, $m) && substr($out, -1, 1) == '[')
+				//-- End Quote Post Back Link]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[ 						$out .= 'quote:' . $this->bbcode_uid . ']';
+ 					}]]></find>
+				<action type="after-add"><![CDATA[
+					//-- Quote Post Back Link
+					//-- Add
+					if (isset($m[2]) && $m[2])
+					{
+						// Push the post ID into the output tag
+						$out = str_replace(":{$this->bbcode_uid}", ";p={$m[2]}:{$this->bbcode_uid}", $out);
+					}
+					//-- End Quote Post Back Link
+]]>
+				</action>
+			</edit>
+		</open>
+
+		<open src="styles/prosilver/template/bbcode.html">
+			<edit>
+				<find><![CDATA[<!-- BEGIN quote_username_open --><blockquote><div><cite>]]></find>
+				<action type="before-add"><![CDATA[<!-- MOD: Quote Post Back Link -->
+<!-- BEGIN quote_username_post_open --><blockquote><div><cite>{USERNAME} {L_WROTE} {L_IN} <a href="{QPBL_POST}" title="{QPBL_TITLE}">{QPBL_TITLE}</a>:</cite><!-- END quote_username_post_open -->
+<!-- BEGIN quote_post_open --><blockquote><div><cite>{QPBL_POST}:</cite><!-- END quote_post_open -->
+<!-- /MOD: Quote Post Back Link -->]]></action>
+			</edit>
+		</open>
+	</action-group>
+</mod>
