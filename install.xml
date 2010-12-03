@@ -25,7 +25,7 @@
 
 		<installation>
 			<level>easy</level>
-			<time>60</time>
+			<time>180</time>
 			<target-version>3.0.8</target-version>
 		</installation>
 
@@ -65,8 +65,14 @@
 	 */
 	public function qpbl_bbcode_second_pass_quote($username, $post_id, $quote)
 	{
-		global $cache, $db;
+		global $cache, $config, $db, $user;
 		global $phpEx;
+
+		// Disabled?
+		if (!$config['qpbl_enable'])
+		{
+			return $this->bbcode_second_pass_quote($username, $quote);
+		}
 
 		// when using the /e modifier, preg_replace slashes double-quotes but does not
 		// seem to slash anything else
@@ -90,7 +96,7 @@
 		$qpbl_posts = $cache->get('_qpbl');
 		if ($qpbl_posts === false || !isset($qpbl_posts[$post_id]))
 		{
-			$sql = 'SELECT post_id, topic_id, forum_id, post_subject
+			$sql = 'SELECT post_id, topic_id, forum_id, post_subject, post_time
 				FROM ' . POSTS_TABLE . '
 				WHERE post_id = ' . $post_id;
 			$result	= $db->sql_query($sql);
@@ -116,12 +122,21 @@
 		if (!empty($qpbl_posts[$post_id]))
 		{
 			$replace['{QPBL_POST}']		= vsprintf($link_format, $qpbl_posts[$post_id]);
-			$replace['{QPBL_TITLE}']	= censor_text($qpbl_posts[$post_id]['post_subject']);
+			if ($config['qpbl_display'] == 'date')
+			{
+				// Need to replace the `L_IN` manually
+				$replace[$user->lang('IN')]	= strtolower($user->lang('ON'));
+				$replace['{QPBL_TITLE}']	= strtolower($user->format_date($qpbl_posts[$post_id]['post_time']));
+			}
+			else
+			{
+				$replace['{QPBL_TITLE}']	= strtolower(censor_text($qpbl_posts[$post_id]['post_subject']));
+			}
 		}
 
 		// Select the correct template switch
 		$tpl = '';
-		if (sizeof($replace) == 3)
+		if (sizeof($replace) >= 3)
 		{
 			$tpl = 'quote_username_post_open';
 		}
@@ -195,5 +210,16 @@
 <!-- /MOD: Quote Post Back Link -->]]></action>
 			</edit>
 		</open>
+
+		<diy-instructions lang="en">
+Install the Quote Post Back Link module through the Admin Controll panel.
+ * ACP
+ * SYSTEM
+ * Administration Control Panel
+ * .MODs
+ * Select the `Quote Post Back Link` module and click on "Add module"
+ * Enable the module
+ * And finally purge the boards cache
+		</diy-instructions>
 	</action-group>
 </mod>
