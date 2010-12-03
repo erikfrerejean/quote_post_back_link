@@ -7,10 +7,8 @@
 		<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
 
 		<title lang="en">Quote Post Back Link (QPBL)</title>
-		<title lang="nl">Quote Post Back Link (QPBL)</title>
 
 		<description lang="en">When a post is quoted on your forum this MOD will automatically aan a link back to the original post in the quote.</description>
-		<description lang="nl">Deze MOD voegt een link toe aan iedere quote gemaakt op het forum. Deze link, verwijst naar de orginele post.</description>
 
 		<author-group>
 			<author>
@@ -37,9 +35,6 @@
 				<rev-version>2.0.0</rev-version>
 				<changelog lang="en">
 					<change>Complete rewrite of the MOD</change>
-				</changelog>
-				<changelog lang="nl">
-					<change>MOD Volledig herschreven</change>
 				</changelog>
 			</entry>
 		</history>
