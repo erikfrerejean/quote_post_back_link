@@ -41,6 +41,12 @@
 	</header>
 
 	<action-group>
+		<copy>
+			<file from="root/includes/acp/acp_qpbl.php" to="includes/acp/acp_qpbl.php" />
+			<file from="root/includes/acp/info/acp_qpbl.php" to="includes/acp/info/acp_qpbl.php" />
+			<file from="root/language/en/mods/info_acp_qpbl.php" to="language/en/mods/info_acp_qpbl.php" />
+		</copy>
+
 		<open src="includes/bbcode.php">
 			<edit>
 				<find><![CDATA['#\[quote(?:=&quot;(.*?)&quot;)?:$uid\]((?!\[quote(?:=&quot;]]></find>
