@@ -61,7 +61,9 @@
 							//-- End Quote Post Back Link]]></action>
 			</edit>
 			<edit>
-				<find>?></find>
+				<find>}
+
+?></find>
 				<action type="before-add"><![CDATA[
 	//-- Quote Post Back Link
 	//-- Add:
