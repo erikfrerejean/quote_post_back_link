@@ -31,6 +31,13 @@
 
 		<history>
 			<entry>
+				<date>2010-12</date>
+				<rev-version>2.0.0.1</rev-version>
+				<changelog lang="en">
+					<change>[ADD] Insert the post ID when clicking on the "quote button"</change>
+				</changelog>
+			</entry>
+			<entry>
 				<date>2010-12-02</date>
 				<rev-version>2.0.0</rev-version>
 				<changelog lang="en">
@@ -46,6 +53,22 @@
 			<file from="root/includes/acp/info/acp_qpbl.php" to="includes/acp/info/acp_qpbl.php" />
 			<file from="root/language/en/mods/info_acp_qpbl.php" to="language/en/mods/info_acp_qpbl.php" />
 		</copy>
+
+		<open src="posting.php">
+			<edit>
+				<find><![CDATA[$message_parser->message = '[quote=&quot;' . $post_data['quote_username']]]></find>
+				<action type="replace-with"><![CDATA[
+		//-- BEGIN Quote Post Back Link
+		//-- Delete
+		/*
+		$message_parser->message = '[quote=&quot;' . $post_data['quote_username'] . '&quot;]' . censor_text(trim($message_parser->message)) . "[/quote]\n";
+		 */
+		//-- Add
+		$message_parser->message = "[quote=&quot;{$post_data['quote_username']}&quot;;p={$post_id}]" . censor_text(trim($message_parser->message)) . "[/quote]\n";
+		//-- END Quote Post Back Link]]>
+				</action>
+			</edit>
+		</open>
 
 		<open src="includes/bbcode.php">
 			<edit>
