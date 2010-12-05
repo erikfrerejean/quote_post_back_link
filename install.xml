@@ -34,8 +34,9 @@
 				<date>2010-12</date>
 				<rev-version>2.0.0.1</rev-version>
 				<changelog lang="en">
-					<change>[Add] Insert the post ID when clicking on the "quote button"</change>
-					<change>[Add] Insert the post ID when clicking on the "quote button" in topic review</change>
+					<change>[Add] Insert the post ID when clicking on the "quote button".</change>
+					<change>[Add] Insert the post ID when clicking on the "quote button" in topic review.</change>
+					<change>[Fix] Don't break the quotes when there are multiple "postID'ed" quoted.</change>
 				</changelog>
 			</entry>
 			<entry>
@@ -217,18 +218,16 @@
 				//-- END Quote Post Back Link]]></action>
 			</edit>
 			<edit>
-				<find><![CDATA[ 						$out .= 'quote:' . $this->bbcode_uid . ']';
- 					}]]></find>
-				<action type="after-add"><![CDATA[
-					//-- BEGIN Quote Post Back Link
-					//-- Add
-					if (isset($m[2]) && $m[2])
-					{
-						// Push the post ID into the output tag
-						$out = str_replace(":{$this->bbcode_uid}", ";p={$m[2]}:{$this->bbcode_uid}", $out);
-					}
-					//-- END Quote Post Back Link
-]]>
+				<find><![CDATA[$out .= 'quote=&quot;' . $username . '&quot;:' . $this->bbcode_uid . ']';]]></find>
+				<action type="replace-with"><![CDATA[						//-- BEGIN Quote Post Back Link
+						//-- Delete:
+						/*
+						$out .= 'quote=&quot;' . $username . '&quot;:' . $this->bbcode_uid . ']';
+						 */
+						//-- Add:
+						$post_id = (isset($m[2]) && $m[2]) ? ";p={$m[2]}" : '';
+						$out .= "quote=&quot;{$username}&quot;{$post_id}:{$this->bbcode_uid}]";
+						//-- END Quote Post Back Link]]>
 				</action>
 			</edit>
 		</open>
