@@ -34,7 +34,8 @@
 				<date>2010-12</date>
 				<rev-version>2.0.0.1</rev-version>
 				<changelog lang="en">
-					<change>[ADD] Insert the post ID when clicking on the "quote button"</change>
+					<change>[Add] Insert the post ID when clicking on the "quote button"</change>
+					<change>[Add] Insert the post ID when clicking on the "quote button" in topic review</change>
 				</changelog>
 			</entry>
 			<entry>
@@ -239,6 +240,25 @@
 <!-- BEGIN quote_username_post_open --><blockquote><div><cite>{USERNAME} {L_WROTE} {L_IN} <a href="{QPBL_POST}" title="{QPBL_TITLE}">{QPBL_TITLE}</a>:</cite><!-- END quote_username_post_open -->
 <!-- BEGIN quote_post_open --><blockquote><div><cite>{QPBL_POST}:</cite><!-- END quote_post_open -->
 <!-- /MOD: Quote Post Back Link -->]]></action>
+			</edit>
+		</open>
+
+		<open src="styles/prosilver/template/editor.js">
+			<edit>
+				<find><![CDATA[insert_text('[quote="' + username + '"]' + theSelection + '[/quote]');]]></find>
+				<action type="replace-with"><![CDATA[			//-- BEGIN Quote Post Back Link
+			//-- Delete:
+			/*
+			insert_text('[quote="' + username + '"]' + theSelection + '[/quote]');
+			 */
+			//-- Add:
+			var _post_id = '';
+			if (post_id)
+			{
+				_post_id = ';p=' + post_id;
+			}
+			insert_text('[quote="' + username + '"' + _post_id + ']' + theSelection + '[/quote]');
+			//-- END Quote Post Back Link]]></action>
 			</edit>
 		</open>
 
