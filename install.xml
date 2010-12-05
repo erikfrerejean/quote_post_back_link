@@ -21,7 +21,7 @@
 			</author>
 		</author-group>
 
-		<mod-version>2.0.0</mod-version>
+		<mod-version>2.0.0.2</mod-version>
 
 		<installation>
 			<level>easy</level>
@@ -32,11 +32,17 @@
 		<history>
 			<entry>
 				<date>2010-12</date>
+				<rev-version>2.0.0.2</rev-version>
+				<changelog lang="en">
+					<change>[Fix] Don't break the quotes when there are multiple "postID'ed" quoted.</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2010-12</date>
 				<rev-version>2.0.0.1</rev-version>
 				<changelog lang="en">
 					<change>[Add] Insert the post ID when clicking on the "quote button".</change>
 					<change>[Add] Insert the post ID when clicking on the "quote button" in topic review.</change>
-					<change>[Fix] Don't break the quotes when there are multiple "postID'ed" quoted.</change>
 				</changelog>
 			</entry>
 			<entry>
