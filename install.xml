@@ -51,21 +51,21 @@
 			<edit>
 				<find><![CDATA['#\[quote(?:=&quot;(.*?)&quot;)?:$uid\]((?!\[quote(?:=&quot;]]></find>
 				<action type="replace-with"><![CDATA[
-							//-- Quote Post Back Link
+							//-- BEGIN Quote Post Back Link
 							//-- Delete:
 							/*
  							'#\[quote(?:=&quot;(.*?)&quot;)?:$uid\]((?!\[quote(?:=&quot;.*?&quot;)?:$uid\]).)?#ise'	=> "\$this->bbcode_second_pass_quote('\$1', '\$2')"
 							*/
 							//-- Add:
 							'#\[quote(?:=&quot;(.*?)&quot;)?(?:;p=([0-9]+))?:$uid\]((?!\[quote(?:=&quot;.*?&quot;)?(?:;p=([0-9]+))?:$uid\]).)?#ise'	=> "\$this->qpbl_bbcode_second_pass_quote('\$1', '\$2', '\$3')"
-							//-- End Quote Post Back Link]]></action>
+							//-- END Quote Post Back Link]]></action>
 			</edit>
 			<edit>
 				<find>}
 
 ?></find>
 				<action type="before-add"><![CDATA[
-	//-- Quote Post Back Link
+	//-- BEGIN Quote Post Back Link
 	//-- Add:
 	/**
 	 * Second parse quote tag
@@ -163,7 +163,7 @@
 
 		return str_replace(array_keys($replace), $replace, $this->bbcode_tpl($tpl));
 	}
-	//-- End Quote Post Back Link]]></action>
+	//-- END Quote Post Back Link]]></action>
 			</edit>
 		</open>
 
@@ -171,39 +171,39 @@
 			<edit>
 				<find>'quote'			=> array('bbcode_id' => 0,</find>
 				<action type="replace-with"><![CDATA[
-			//-- Quote Post Back Link
+			//-- BEGIN Quote Post Back Link
 			//-- Delete:
 			/*
  			'quote'			=> array('bbcode_id' => 0,	'regexp' => array('#\[quote(?:=&quot;(.*?)&quot;)?\](.+)\[/quote\]#ise' => "\$this->bbcode_quote('\$0')")),
 			*/
 			//-- Add:
 			'quote'			=> array('bbcode_id' => 0, 'regexp' => array('#\[quote(?:=&quot;(.*?)&quot;)?(?:;p=([0-9]+))?\](.+)\[/quote\]#ise' => "\$this->bbcode_quote('\$0')")),
-			//-- End Quote Post Back Link]]></action>
+			//-- END Quote Post Back Link]]></action>
 			</edit>
 			<edit>
 				<find><![CDATA[else if (preg_match('#^quote(?:=&quot;(.*?)&quot;)?]]></find>
 				<action type="replace-with"><![CDATA[
-				//-- Quote Post Back Link
+				//-- BEGIN Quote Post Back Link
 				//-- Delete:
 				/*
  				else if (preg_match('#^quote(?:=&quot;(.*?)&quot;)?$#is', $buffer, $m) && substr($out, -1, 1) == '[')
 				*/
 				//-- Add:
 				else if (preg_match('#^quote(?:=&quot;(.*?)&quot;)?(?:;p=([0-9]+))?$#is', $buffer, $m) && substr($out, -1, 1) == '[')
-				//-- End Quote Post Back Link]]></action>
+				//-- END Quote Post Back Link]]></action>
 			</edit>
 			<edit>
 				<find><![CDATA[ 						$out .= 'quote:' . $this->bbcode_uid . ']';
  					}]]></find>
 				<action type="after-add"><![CDATA[
-					//-- Quote Post Back Link
+					//-- BEGIN Quote Post Back Link
 					//-- Add
 					if (isset($m[2]) && $m[2])
 					{
 						// Push the post ID into the output tag
 						$out = str_replace(":{$this->bbcode_uid}", ";p={$m[2]}:{$this->bbcode_uid}", $out);
 					}
-					//-- End Quote Post Back Link
+					//-- END Quote Post Back Link
 ]]>
 				</action>
 			</edit>
