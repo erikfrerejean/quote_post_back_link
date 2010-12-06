@@ -31,14 +31,21 @@
 
 		<history>
 			<entry>
-				<date>2010-12</date>
+				<date>0000-00-00</date>
+				<rev-version>2.0.0.3</rev-version>
+				<changelog lang="en">
+					<change>[Fix] #1</change>
+				</changelog>
+			</entry>
+			<entry>
+				<date>2010-12-05</date>
 				<rev-version>2.0.0.2</rev-version>
 				<changelog lang="en">
 					<change>[Fix] Don't break the quotes when there are multiple "postID'ed" quoted.</change>
 				</changelog>
 			</entry>
 			<entry>
-				<date>2010-12</date>
+				<date>2010-12-05</date>
 				<rev-version>2.0.0.1</rev-version>
 				<changelog lang="en">
 					<change>[Add] Insert the post ID when clicking on the "quote button".</change>
@@ -81,22 +88,29 @@
 		<open src="includes/bbcode.php">
 			<edit>
 				<find><![CDATA['#\[quote(?:=&quot;(.*?)&quot;)?:$uid\]((?!\[quote(?:=&quot;]]></find>
-				<action type="replace-with"><![CDATA[
-							//-- BEGIN Quote Post Back Link
-							//-- Delete:
-							/*
- 							'#\[quote(?:=&quot;(.*?)&quot;)?:$uid\]((?!\[quote(?:=&quot;.*?&quot;)?:$uid\]).)?#ise'	=> "\$this->bbcode_second_pass_quote('\$1', '\$2')"
-							*/
-							//-- Add:
-							'#\[quote(?:=&quot;(.*?)&quot;)?(?:;p=([0-9]+))?:$uid\]((?!\[quote(?:=&quot;.*?&quot;)?(?:;p=([0-9]+))?:$uid\]).)?#ise'	=> "\$this->qpbl_bbcode_second_pass_quote('\$1', '\$2', '\$3')"
-							//-- END Quote Post Back Link]]></action>
+				<action type="replace-with"><![CDATA[							//-- Quote Post Back Link
+				//-- Delete:
+				/*
+					'#\[quote(?:=&quot;(.*?)&quot;)?:$uid\]((?!\[quote(?:=&quot;.*?&quot;)?:$uid\]).)?#ise'	=> "\$this->bbcode_second_pass_quote('\$1', '\$2')"
+				*/
+				//-- Add:
+				'#\[quote(?:=&quot;(.*?)&quot;)?(?:;p=([0-9]+))?:$uid\]((?!\[quote(?:=&quot;.*?&quot;)?(?:;p=([0-9]+))?:$uid\]).)?#ise'	=> "\$this->qpbl_bbcode_second_pass_quote('\$1', '\$2', '\$3')"
+				//-- End Quote Post Back Link]]></action>
 			</edit>
 			<edit>
-				<find>}
+				<find><![CDATA[static $replacements = array(]]></find>
+				<action type="after-add"><![CDATA[//-- BEGIN Quote Post Back Link
+				//-- Add:
+				'quote_username_post_open'	=> array('{USERNAME}'	=> '$1', '{QPBL_POST}'	=> '$2', '{QPBL_TITLE}'	=> '$3'),
+				'quote_post_open'		=> array('{QPBL_POST}'	=> '$2', '{QPBL_TITLE}'		=> '$3'),
+				//-- END Quote Post Back Link]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[}
 
-?></find>
+?>]]></find>
 				<action type="before-add"><![CDATA[
-	//-- BEGIN Quote Post Back Link
+	//-- Quote Post Back Link
 	//-- Add:
 	/**
 	 * Second parse quote tag
@@ -133,7 +147,7 @@
 
 		// See whether this post actually exists
 		$qpbl_posts = $cache->get('_qpbl');
-		if ($qpbl_posts === false || !isset($qpbl_posts[$post_id]))
+		if ($post_id && ($qpbl_posts === false || !isset($qpbl_posts[$post_id])))
 		{
 			$sql = 'SELECT post_id, topic_id, forum_id, post_subject, post_time
 				FROM ' . POSTS_TABLE . '
@@ -155,21 +169,21 @@
 		$replace = array();
 		if ($username)
 		{
-			$replace['{USERNAME}'] = $username;
+			$replace['$1'] = $username;
 		}
 
 		if (!empty($qpbl_posts[$post_id]))
 		{
-			$replace['{QPBL_POST}']		= vsprintf($link_format, $qpbl_posts[$post_id]);
+			$replace['$2']		= vsprintf($link_format, $qpbl_posts[$post_id]);
 			if ($config['qpbl_display'] == 'date')
 			{
 				// Need to replace the `L_IN` manually
 				$replace[$user->lang('IN')]	= strtolower($user->lang('ON'));
-				$replace['{QPBL_TITLE}']	= strtolower($user->format_date($qpbl_posts[$post_id]['post_time']));
+				$replace['$3']	= strtolower($user->format_date($qpbl_posts[$post_id]['post_time']));
 			}
 			else
 			{
-				$replace['{QPBL_TITLE}']	= strtolower(censor_text($qpbl_posts[$post_id]['post_subject']));
+				$replace['$3']	= strtolower(censor_text($qpbl_posts[$post_id]['post_subject']));
 			}
 		}
 
@@ -179,11 +193,11 @@
 		{
 			$tpl = 'quote_username_post_open';
 		}
-		else if (empty($replace['{USERNAME}']) && !empty($replace['{QPBL_POST}']) && !empty($replace['{QPBL_TITLE}']))
+		else if (empty($replace['$1']) && !empty($replace['$2']) && !empty($replace['$3']))
 		{
 			$tpl = 'quote_post_open';
 		}
-		else if (!empty($replace['{USERNAME}']) && empty($replace['{QPBL_POST}']) && empty($replace['{QPBL_TITLE}']))
+		else if (!empty($replace['$1']) && empty($replace['$2']) && empty($replace['$3']))
 		{
 			$tpl = 'quote_username_open';
 		}
@@ -194,7 +208,7 @@
 
 		return str_replace(array_keys($replace), $replace, $this->bbcode_tpl($tpl));
 	}
-	//-- END Quote Post Back Link]]></action>
+	//-- End Quote Post Back Link]]></action>
 			</edit>
 		</open>
 
@@ -240,11 +254,10 @@
 
 		<open src="styles/prosilver/template/bbcode.html">
 			<edit>
-				<find><![CDATA[<!-- BEGIN quote_username_open --><blockquote><div><cite>]]></find>
-				<action type="before-add"><![CDATA[<!-- MOD: Quote Post Back Link -->
-<!-- BEGIN quote_username_post_open --><blockquote><div><cite>{USERNAME} {L_WROTE} {L_IN} <a href="{QPBL_POST}" title="{QPBL_TITLE}">{QPBL_TITLE}</a>:</cite><!-- END quote_username_post_open -->
-<!-- BEGIN quote_post_open --><blockquote><div><cite>{QPBL_POST}:</cite><!-- END quote_post_open -->
-<!-- /MOD: Quote Post Back Link -->]]></action>
+				<find><![CDATA[<!-- MOD: Quote Post Back Link -->
+				<!-- BEGIN quote_username_post_open --><blockquote><div><cite>{USERNAME} {L_WROTE} {L_IN} <a href="{QPBL_POST}" title="{QPBL_TITLE}">{QPBL_TITLE}</a>:</cite><!-- END quote_username_post_open -->
+				<!-- BEGIN quote_post_open --><blockquote><div><cite><a href="{QPBL_POST}" title="{QPBL_TITLE}">{QPBL_TITLE}</a>:</cite><!-- END quote_post_open -->
+				<!-- /MOD: Quote Post Back Link -->]]></action>
 			</edit>
 		</open>
 
