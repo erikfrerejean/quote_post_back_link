@@ -31,6 +31,13 @@
 
 		<history>
 			<entry>
+				<date>0000-00-00</date>
+				<rev-version>2.0.0.3</rev-version>
+				<changelog lang="en">
+					<change>[Fix] First character of quotes get cut off.</change>
+				</changelog>
+			</entry>
+			<entry>
 				<date>2010-12</date>
 				<rev-version>2.0.0.2</rev-version>
 				<changelog lang="en">
@@ -192,7 +199,7 @@
 			return $this->bbcode_tpl('quote_open');
 		}
 
-		return str_replace(array_keys($replace), $replace, $this->bbcode_tpl($tpl));
+		return str_replace(array_keys($replace), $replace, $this->bbcode_tpl($tpl)) . $quote;
 	}
 	//-- END Quote Post Back Link]]></action>
 			</edit>
