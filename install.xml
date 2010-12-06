@@ -254,10 +254,11 @@
 
 		<open src="styles/prosilver/template/bbcode.html">
 			<edit>
-				<find><![CDATA[<!-- MOD: Quote Post Back Link -->
-				<!-- BEGIN quote_username_post_open --><blockquote><div><cite>{USERNAME} {L_WROTE} {L_IN} <a href="{QPBL_POST}" title="{QPBL_TITLE}">{QPBL_TITLE}</a>:</cite><!-- END quote_username_post_open -->
-				<!-- BEGIN quote_post_open --><blockquote><div><cite><a href="{QPBL_POST}" title="{QPBL_TITLE}">{QPBL_TITLE}</a>:</cite><!-- END quote_post_open -->
-				<!-- /MOD: Quote Post Back Link -->]]></action>
+				<find><![CDATA[<!-- BEGIN quote_username_open --><blockquote><div><cite>]]></find>
+				<action type="before-add"><![CDATA[<!-- MOD: Quote Post Back Link -->
+<!-- BEGIN quote_username_post_open --><blockquote><div><cite>{USERNAME} {L_WROTE} {L_IN} <a href="{QPBL_POST}" title="{QPBL_TITLE}">{QPBL_TITLE}</a>:</cite><!-- END quote_username_post_open -->
+<!-- BEGIN quote_post_open --><blockquote><div><cite><a href="{QPBL_POST}" title="{QPBL_TITLE}">{QPBL_TITLE}</a>:</cite><!-- END quote_post_open -->
+<!-- /MOD: Quote Post Back Link -->]]></action>
 			</edit>
 		</open>
 
