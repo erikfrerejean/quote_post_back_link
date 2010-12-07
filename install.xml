@@ -34,6 +34,7 @@
 				<date>0000-00-00</date>
 				<rev-version>2.0.0.3</rev-version>
 				<changelog lang="en">
+					<change>[Change] Allow the admin to define whether topic titles are forced to lower case or not.</change>
 					<change>[Fix] #1</change>
 					<change>[Fix] First character of quotes get cut off.</change>
 				</changelog>
@@ -123,7 +124,7 @@
 		global $phpEx;
 
 		// Disabled?
-		if (!$config['qpbl_enable'])
+		if (empty($config['qpbl_enable']))
 		{
 			return $this->bbcode_second_pass_quote($username, $quote);
 		}
@@ -180,11 +181,17 @@
 			{
 				// Need to replace the `L_IN` manually
 				$replace[$user->lang('IN')]	= strtolower($user->lang('ON'));
-				$replace['$3']	= strtolower($user->format_date($qpbl_posts[$post_id]['post_time']));
+				$replace['$3']	= $user->format_date($qpbl_posts[$post_id]['post_time']);
 			}
 			else
 			{
-				$replace['$3']	= strtolower(censor_text($qpbl_posts[$post_id]['post_subject']));
+				$replace['$3']	= censor_text($qpbl_posts[$post_id]['post_subject']);
+			}
+			
+			// Force lowercase?
+			if (!empty($config['qpbl_l_case']))
+			{
+				$replace['$3']	= strtolower($replace['$3']);
 			}
 		}
 
