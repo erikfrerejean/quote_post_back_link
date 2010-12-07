@@ -111,7 +111,7 @@
 
 ?>]]></find>
 				<action type="before-add"><![CDATA[
-	//-- BEGIN Quote Post Back Link
+	//-- Quote Post Back Link
 	//-- Add:
 	/**
 	 * Second parse quote tag
@@ -148,7 +148,7 @@
 
 		// See whether this post actually exists
 		$qpbl_posts = $cache->get('_qpbl');
-		if ($qpbl_posts === false || !isset($qpbl_posts[$post_id]))
+		if ($post_id && ($qpbl_posts === false || !isset($qpbl_posts[$post_id])))
 		{
 			$sql = 'SELECT post_id, topic_id, forum_id, post_subject, post_time
 				FROM ' . POSTS_TABLE . '
@@ -170,21 +170,21 @@
 		$replace = array();
 		if ($username)
 		{
-			$replace['{USERNAME}'] = $username;
+			$replace['$1'] = $username;
 		}
 
 		if (!empty($qpbl_posts[$post_id]))
 		{
-			$replace['{QPBL_POST}']		= vsprintf($link_format, $qpbl_posts[$post_id]);
+			$replace['$2']		= vsprintf($link_format, $qpbl_posts[$post_id]);
 			if ($config['qpbl_display'] == 'date')
 			{
 				// Need to replace the `L_IN` manually
 				$replace[$user->lang('IN')]	= strtolower($user->lang('ON'));
-				$replace['{QPBL_TITLE}']	= strtolower($user->format_date($qpbl_posts[$post_id]['post_time']));
+				$replace['$3']	= strtolower($user->format_date($qpbl_posts[$post_id]['post_time']));
 			}
 			else
 			{
-				$replace['{QPBL_TITLE}']	= strtolower(censor_text($qpbl_posts[$post_id]['post_subject']));
+				$replace['$3']	= strtolower(censor_text($qpbl_posts[$post_id]['post_subject']));
 			}
 		}
 
@@ -194,11 +194,11 @@
 		{
 			$tpl = 'quote_username_post_open';
 		}
-		else if (empty($replace['{USERNAME}']) && !empty($replace['{QPBL_POST}']) && !empty($replace['{QPBL_TITLE}']))
+		else if (empty($replace['$1']) && !empty($replace['$2']) && !empty($replace['$3']))
 		{
 			$tpl = 'quote_post_open';
 		}
-		else if (!empty($replace['{USERNAME}']) && empty($replace['{QPBL_POST}']) && empty($replace['{QPBL_TITLE}']))
+		else if (!empty($replace['$1']) && empty($replace['$2']) && empty($replace['$3']))
 		{
 			$tpl = 'quote_username_open';
 		}
@@ -209,7 +209,7 @@
 
 		return str_replace(array_keys($replace), $replace, $this->bbcode_tpl($tpl)) . $quote;
 	}
-	//-- END Quote Post Back Link]]></action>
+	//-- End Quote Post Back Link]]></action>
 			</edit>
 		</open>
 
