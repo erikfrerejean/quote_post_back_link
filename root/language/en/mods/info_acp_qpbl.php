@@ -47,5 +47,7 @@ $lang = array_merge($lang, array(
 	'QPBL_DISPLAY_TITLE'	=> 'Post title',
 	'QPBL_DISPLAY_DATE'		=> 'Post date',
 	'QPBL_ENABLE'			=> 'Enable QPBL',
+	'QPBL_L_CASE'			=> 'Titles to lowercase',
+	'QPBL_L_CASE_EXPLAIN'	=> 'By setting this option the MOD will force the topic titles that are used in the quote to be all lowercase. Set to `no` if you want to use the original case.',
 	'QPBL_SETTINGS'			=> 'QPBL Settings',
 ));

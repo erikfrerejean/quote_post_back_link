@@ -38,7 +38,8 @@ class acp_qpbl
 		$vars = array(
 			'legend1'	=> 'QPBL_SETTINGS',
 			'qpbl_enable'	=> array('lang' => 'QPBL_ENABLE',	'validate' => 'bool',			'type' => 'radio:yes_no',	'explain' => false),
-			'qpbl_display'	=> array('lang' => 'QPBL_DISPLAY',	'method' => 'diplay_select',	'type' => 'select',			'explain' => true)
+			'qpbl_display'	=> array('lang' => 'QPBL_DISPLAY',	'method' => 'diplay_select',	'type' => 'select',			'explain' => true),
+			'qpbl_l_case'	=> array('lang' => 'QPBL_L_CASE',	'validate' => 'bool',			'type' => 'radio:yes_no',	'explain' => true),
 		);
 		
 		// Fetch the result
