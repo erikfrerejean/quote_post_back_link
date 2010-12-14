@@ -21,7 +21,7 @@
 			</author>
 		</author-group>
 
-		<mod-version>2.0.0.3</mod-version>
+		<mod-version>2.0.0.4</mod-version>
 
 		<installation>
 			<level>easy</level>
@@ -30,6 +30,13 @@
 		</installation>
 
 		<history>
+			<entry>
+				<date>2010-12-14</date>
+				<rev-version>2.0.0.4</rev-version>
+				<changelog lang="en">
+					<change>[Fix] #2, Fix nested quotes</change>
+				</changelog>
+			</entry>
 			<entry>
 				<date>2010-12-07</date>
 				<rev-version>2.0.0.3</rev-version>
@@ -224,38 +231,49 @@
 			<edit>
 				<find>'quote'			=> array('bbcode_id' => 0,</find>
 				<action type="replace-with"><![CDATA[
-			//-- BEGIN Quote Post Back Link
+			//-- Quote Post Back Link
 			//-- Delete:
 			/*
- 			'quote'			=> array('bbcode_id' => 0,	'regexp' => array('#\[quote(?:=&quot;(.*?)&quot;)?\](.+)\[/quote\]#ise' => "\$this->bbcode_quote('\$0')")),
+				'quote'			=> array('bbcode_id' => 0,	'regexp' => array('#\[quote(?:=&quot;(.*?)&quot;)?\](.+)\[/quote\]#ise' => "\$this->bbcode_quote('\$0')")),
 			*/
 			//-- Add:
 			'quote'			=> array('bbcode_id' => 0, 'regexp' => array('#\[quote(?:=&quot;(.*?)&quot;)?(?:;p=([0-9]+))?\](.+)\[/quote\]#ise' => "\$this->bbcode_quote('\$0')")),
-			//-- END Quote Post Back Link]]></action>
+			//-- End Quote Post Back Link]]></action>
+			</edit>
+			<edit>
+				<find><![CDATA[$in = preg_replace('#quote=&quot;(.*?)&quot;\]#ie']]></find>
+				<action type="replace-with"><![CDATA[//-- BEGIN Quote Post Back Link
+				//-- Delete:
+				/*
+				$in = preg_replace('#quote=&quot;(.*?)&quot;\]#ie', "'quote=&quot;' . str_replace(array('[', ']', '\\\"'), array('&#91;', '&#93;', '\"'), '\$1') . '&quot;]'", $in);
+				*/
+				//-- Add:
+				$in = preg_replace('#quote=&quot;(.*?)&quot;p=([0-9]+)#ie', "'quote&quot;' . str_replace(array('[', ']', '\\\"', array('&#91;', '&#93;', '\"'), '\$1') . '&quot;]'", $in);
+				//-- END Quote Post Back Link]]></action>
 			</edit>
 			<edit>
 				<find><![CDATA[else if (preg_match('#^quote(?:=&quot;(.*?)&quot;)?]]></find>
 				<action type="replace-with"><![CDATA[
-				//-- BEGIN Quote Post Back Link
+				//-- Quote Post Back Link
 				//-- Delete:
 				/*
- 				else if (preg_match('#^quote(?:=&quot;(.*?)&quot;)?$#is', $buffer, $m) && substr($out, -1, 1) == '[')
+					else if (preg_match('#^quote(?:=&quot;(.*?)&quot;)?$#is', $buffer, $m) && substr($out, -1, 1) == '[')
 				*/
 				//-- Add:
 				else if (preg_match('#^quote(?:=&quot;(.*?)&quot;)?(?:;p=([0-9]+))?$#is', $buffer, $m) && substr($out, -1, 1) == '[')
-				//-- END Quote Post Back Link]]></action>
+				//-- End Quote Post Back Link]]></action>
 			</edit>
 			<edit>
 				<find><![CDATA[$out .= 'quote=&quot;' . $username . '&quot;:' . $this->bbcode_uid . ']';]]></find>
 				<action type="replace-with"><![CDATA[						//-- BEGIN Quote Post Back Link
-						//-- Delete:
-						/*
-						$out .= 'quote=&quot;' . $username . '&quot;:' . $this->bbcode_uid . ']';
-						 */
-						//-- Add:
-						$post_id = (isset($m[2]) && $m[2]) ? ";p={$m[2]}" : '';
-						$out .= "quote=&quot;{$username}&quot;{$post_id}:{$this->bbcode_uid}]";
-						//-- END Quote Post Back Link]]>
+				//-- Delete:
+				/*
+				$out .= 'quote=&quot;' . $username . '&quot;:' . $this->bbcode_uid . ']';
+				 */
+				//-- Add:
+				$post_id = (isset($m[2]) && $m[2]) ? ";p={$m[2]}" : '';
+				$out .= "quote=&quot;{$username}&quot;{$post_id}:{$this->bbcode_uid}]";
+				//-- END Quote Post Back Link]]>
 				</action>
 			</edit>
 		</open>
