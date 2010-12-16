@@ -1,11 +1,19 @@
 <?php
 /**
-*
-* @package acp
-* @copyright (c) 2010 Erik Frèrejean ( N/A )
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License
-*
-*/
+ *
+ * @package acp
+ * @copyright (c) 2010 Erik Frèrejean ( N/A )
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ *
+ */
+
+/**
+ * @ignore
+ */
+if (!defined('IN_PHPBB'))
+{
+	exit;
+}
 
 /**
  * @package module_install
