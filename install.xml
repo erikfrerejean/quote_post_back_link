@@ -36,6 +36,13 @@
 		</installation>
 
 		<history>
+            <entry>
+                <date>0000-00-00</date>
+                <rev-version>2.0.0.5</rev-version>
+                <changelog lang="en">
+                    <change>[Fix] #3, quotes without user and post trimmed first character.</change>
+                </changelog>
+            </entry>
 			<entry>
 				<date>2010-12-16</date>
 				<rev-version>2.0.0.4</rev-version>
@@ -224,7 +231,7 @@
 		}
 		else
 		{
-			return $this->bbcode_tpl('quote_open');
+			return $this->bbcode_tpl('quote_open') . $quote;
 		}
 
 		return str_replace(array_keys($replace), $replace, $this->bbcode_tpl($tpl)) . $quote;
