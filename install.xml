@@ -178,7 +178,7 @@
 		{
 			$sql = 'SELECT post_id, topic_id, forum_id, post_subject, post_time
 				FROM ' . POSTS_TABLE . '
-				WHERE post_id = ' . $post_id;
+				WHERE post_id = ' . (int) $post_id;
 			$result	= $db->sql_query($sql);
 			$data	= $db->sql_fetchrow($result);
 			$db->sql_freeresult($result);
