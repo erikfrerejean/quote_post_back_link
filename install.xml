@@ -14,7 +14,9 @@
 
 		<title lang="en">Quote Post Back Link (QPBL)</title>
 
-		<description lang="en">When a post is quoted on your forum this MOD will automatically aan a link back to the original post in the quote.</description>
+		<description lang="en">When a post is quoted on your forum this MOD will automatically add a link back to the original post in the quote.</description>
+		
+		<author-notes lang="en">This MOD requires PHP > 5.0.0.</author-notes>
 
 		<author-group>
 			<author>
@@ -36,13 +38,13 @@
 		</installation>
 
 		<history>
-            <entry>
-                <date>0000-00-00</date>
-                <rev-version>2.0.0.5</rev-version>
-                <changelog lang="en">
-                    <change>[Fix] #3, quotes without user and post trimmed first character.</change>
-                </changelog>
-            </entry>
+<entry>
+<date>0000-00-00</date>
+<rev-version>2.0.0.5</rev-version>
+<changelog lang="en">
+<change>[Fix] #3, quotes without user and post trimmed first character.</change>
+</changelog>
+</entry>
 			<entry>
 				<date>2010-12-16</date>
 				<rev-version>2.0.0.4</rev-version>
@@ -99,7 +101,7 @@
 		//-- Delete
 		/*
 		$message_parser->message = '[quote=&quot;' . $post_data['quote_username'] . '&quot;]' . censor_text(trim($message_parser->message)) . "[/quote]\n";
-		 */
+		*/
 		//-- Add
 		$message_parser->message = "[quote=&quot;{$post_data['quote_username']}&quot;;p={$post_id}]" . censor_text(trim($message_parser->message)) . "[/quote]\n";
 		//-- END Quote Post Back Link]]>
@@ -135,9 +137,9 @@
 	//-- Quote Post Back Link
 	//-- Add:
 	/**
-	 * Second parse quote tag
-	 * QPBL Style
-	 */
+	* Second parse quote tag
+	* QPBL Style
+	*/
 	public function qpbl_bbcode_second_pass_quote($username, $post_id, $quote)
 	{
 		global $cache, $config, $db, $user;
@@ -282,7 +284,7 @@
 				//-- Delete:
 				/*
 				$out .= 'quote=&quot;' . $username . '&quot;:' . $this->bbcode_uid . ']';
-				 */
+				*/
 				//-- Add:
 				$post_id = (isset($m[2]) && $m[2]) ? ";p={$m[2]}" : '';
 				$out .= "quote=&quot;{$username}&quot;{$post_id}:{$this->bbcode_uid}]";
@@ -308,7 +310,7 @@
 			//-- Delete:
 			/*
 			insert_text('[quote="' + username + '"]' + theSelection + '[/quote]');
-			 */
+			*/
 			//-- Add:
 			var _post_id = '';
 			if (post_id)
@@ -322,13 +324,13 @@
 
 		<diy-instructions lang="en">
 Install the Quote Post Back Link module through the Admin Controll panel.
- * ACP
- * SYSTEM
- * Administration Control Panel
- * .MODs
- * Select the `Quote Post Back Link` module and click on "Add module"
- * Enable the module
- * And finally purge the boards cache
+* ACP
+* SYSTEM
+* Administration Control Panel
+* .MODs
+* Select the `Quote Post Back Link` module and click on "Add module"
+* Enable the module
+* And finally purge the boards cache
 		</diy-instructions>
 	</action-group>
 </mod>
