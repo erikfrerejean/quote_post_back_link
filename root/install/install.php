@@ -57,7 +57,7 @@ $versions = array(
 	'2.0.0.5' => array(
 
 		'module_add' => array(
-			array('acp', 'ACP_CAT_MODS', array(
+			array('acp', 'ACP_CAT_DOT_MODS', array(
 				'module_langname'	=> 'ACP_QPBL',
 			)),
 			array('acp', 'ACP_QPBL', array(
