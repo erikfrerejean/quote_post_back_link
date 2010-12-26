@@ -41,6 +41,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, array(
 	'ACP_QPBL'			=> 'Quote Post Back Link',
 	'ACP_QPBL_EXPLAIN'	=> 'Use this page to configure QPBL',
+	'ACP_QPBL_SETTINGS'	=> 'QPBL Settings',
 
 	'QPBL_DISPLAY'			=> 'QPBL display',
 	'QPBL_DISPLAY_EXPLAIN'	=> 'Select which format will be used for the backlink',
@@ -50,4 +51,14 @@ $lang = array_merge($lang, array(
 	'QPBL_L_CASE'			=> 'Titles to lowercase',
 	'QPBL_L_CASE_EXPLAIN'	=> 'By setting this option the MOD will force the topic titles that are used in the quote to be all lowercase. Set to `no` if you want to use the original case.',
 	'QPBL_SETTINGS'			=> 'QPBL Settings',
+));
+
+// Install
+$lang = array_merge($lang, array(
+	'INSTALL_QPBL'				=> 'Install Quote Post Back Link',
+	'INSTALL_QPBL_CONFIRM'		=> 'Are you sure that you want to install QPBL?',
+	'UPDATE_QPBL'				=> 'Update Quote Post Back Link',
+	'UPDATE_QPBL_CONFIRM'		=> 'Are you sure that you want to update QPBL?',
+	'UNINSTALL_QPBL'			=> 'Uninstall Quote Post Back Link',
+	'UNINSTALL_QPBL_CONFIRM'	=> 'Are you sure that you want to uninstall QPBL?',
 ));

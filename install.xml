@@ -38,13 +38,14 @@
 		</installation>
 
 		<history>
-<entry>
-<date>0000-00-00</date>
-<rev-version>2.0.0.5</rev-version>
-<changelog lang="en">
-<change>[Fix] #3, quotes without user and post trimmed first character.</change>
-</changelog>
-</entry>
+			<entry>
+			<date>0000-00-00</date>
+				<rev-version>2.0.0.5</rev-version>
+				<changelog lang="en">
+					<change>[Add] MOD installer.</change>
+					<change>[Fix] #3, quotes without user and post trimmed first character.</change>
+				</changelog>
+			</entry>
 			<entry>
 				<date>2010-12-16</date>
 				<rev-version>2.0.0.4</rev-version>
@@ -90,7 +91,9 @@
 		<copy>
 			<file from="root/includes/acp/acp_qpbl.php" to="includes/acp/acp_qpbl.php" />
 			<file from="root/includes/acp/info/acp_qpbl.php" to="includes/acp/info/acp_qpbl.php" />
+			<file from="root/install/install.php" to="install/install.php" />
 			<file from="root/language/en/mods/info_acp_qpbl.php" to="language/en/mods/info_acp_qpbl.php" />
+			<file from="root/umil/*.*" to="umil/*.*" />
 		</copy>
 
 		<open src="posting.php">
@@ -322,15 +325,8 @@
 			</edit>
 		</open>
 
-		<diy-instructions lang="en">
-Install the Quote Post Back Link module through the Admin Controll panel.
-* ACP
-* SYSTEM
-* Administration Control Panel
-* .MODs
-* Select the `Quote Post Back Link` module and click on "Add module"
-* Enable the module
-* And finally purge the boards cache
-		</diy-instructions>
+		<php-installer>install/install.php</php-installer>
+		
+		<diy-instructions lang="en">Remove the `install/` directory from the server.</diy-instructions>
 	</action-group>
 </mod>
