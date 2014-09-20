@@ -4,7 +4,8 @@
  * info_acp_qpbl [English]
  *
  * @package language
- * @copyright (c) 2010 Erik Frèrejean ( N/A )
+ * @author Erik Frèrejean (Erik Frèrejean) erikfrerejean@phpbb.com
+ * @copyright (c) 2012 Erik Frèrejean ( N/A )
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  */

@@ -2,7 +2,8 @@
 /**
  *
  * @package acp
- * @copyright (c) 2010 Erik Frèrejean ( N/A )
+ * @author Erik Frèrejean (Erik Frèrejean) erikfrerejean@phpbb.com
+ * @copyright (c) 2012 Erik Frèrejean ( N/A )
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  */
@@ -25,9 +26,15 @@ class acp_qpbl_info
 		return array(
 			'filename'	=> 'acp_qpbl',
 			'title'		=> 'ACP_QPBL',
-			'version'	=> '2.0.0',
+			'version'	=> '2.1.0',
 			'modes'		=> array(
-				'main'		=> array('title' => 'ACP_QPBL', 'auth' => 'acl_a_board', 'cat' => array('ACP_MESSAGES')),
+				'main'	=> array(
+					'title'	=> 'ACP_QPBL',
+					'auth'	=> 'acl_a_board',
+					'cat'	=> array(
+						'ACP_MESSAGES',
+					)
+				),
 			),
 		);
 	}
