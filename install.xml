@@ -179,7 +179,7 @@
 
 		<open src="includes/message_parser.php">
 			<edit>
-				<find><![CDATA['quote'			=> array('bbcode_id' => 0,]]></find>
+				<find><![CDATA['quote'          => array('bbcode_id' => 0,  'regexp' => array('#\[quote(?:=&quot;(.*?)&quot;)?\](.+)\[/quote\]#uise' => "\$this->bbcode_quote('\$0')")),]]></find>
 				<action type="replace-with"><![CDATA[
 			//-- Quote Post Back Link
 			//-- Delete:
