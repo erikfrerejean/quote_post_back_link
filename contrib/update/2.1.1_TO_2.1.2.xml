@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<?xml-stylesheet type="text/xsl" href="./modx.prosilver.en.xsl"?>
+<!--
+    For security purposes, please check: http://www.phpbb.com/mods/
+    for the latest version of this MOD. Although MODs are checked
+    before being allowed in the MODs Database there is no guarantee
+    that there are no security problems within the MOD. No support
+    will be given for MODs not found within the MODs Database which
+    can be found at http://www.phpbb.com/mods/
+-->
+<mod xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="https://www.phpbb.com/mods/xml/modx-1.2.6.xsd">
+    <header>
+	<license>http://opensource.org/licenses/gpl-license.php GNU General Public License v2</license>
+
+	<title lang="en">Quote Post Back Link (QPBL)</title>
+
+	<description lang="en">When a post is quoted on your forum this MOD will automatically add a link back to the original post in the quote.</description>
+
+	<author-notes lang="en">This MOD requires PHP > 5.0.0.</author-notes>
+
+	<author-group>
+	    <author>
+		<realname>Erik Frèrejean</realname>
+		<username>Erik Frèrejean</username>
+		<homepage>http://leximosi.github.com</homepage>
+		<contributions-group>
+		    <contributions status="current" from="2008-12-21"/>
+		</contributions-group>
+	    </author>
+	</author-group>
+
+	<mod-version>2.1.0</mod-version>
+
+	<installation>
+	    <level>easy</level>
+	    <time>180</time>
+	    <target-version>3.0.12</target-version>
+	</installation>
+
+	<history>
+	    <entry>
+		<date>2014-09-19</date>
+		<rev-version>2.1.2</rev-version>
+		<changelog lang="en">
+		    <change>[Sec] Fix SQL injection through post ID. Report &amp; fix by "webwit"</change>
+	       </changelog>
+	    </entry>
+	    <entry>
+		<date>2012-12-11</date>
+		<rev-version>2.1.1</rev-version>
+		<changelog lang="en">
+		    <change>Some minor corrections after validation of v2.1.0.</change>
+		</changelog>
+	    </entry>
+	    <entry>
+		<date>2012-11-07</date>
+		<rev-version>2.1.0</rev-version>
+		<changelog lang="en">
+		    <change>Updated for phpBB 3.0.11.</change>
+		    <change>Various tweaks throughout the MOD.</change>
+		    <change>Updated UMIL.</change>
+		</changelog>
+	    </entry>
+	    <entry>
+		<date>2010-12-25</date>
+		<rev-version>2.0.0.5</rev-version>
+		<changelog lang="en">
+		    <change>[Add] MOD installer.</change>
+		    <change>[Fix] #3, quotes without user and post trimmed first character.</change>
+		</changelog>
+	    </entry>
+	    <entry>
+		<date>2010-12-16</date>
+		<rev-version>2.0.0.4</rev-version>
+		<changelog lang="en">
+		    <change>[Fix] #2, Fix nested quotes</change>
+		</changelog>
+	    </entry>
+	    <entry>
+		<date>2010-12-07</date>
+		<rev-version>2.0.0.3</rev-version>
+		<changelog lang="en">
+		    <change>[Change] Allow the admin to define whether topic titles are forced to lower case or not.</change>
+		    <change>[Fix] #1</change>
+		    <change>[Fix] First character of quotes get cut off.</change>
+		</changelog>
+	    </entry>
+	    <entry>
+		<date>2010-12-05</date>
+		<rev-version>2.0.0.2</rev-version>
+		<changelog lang="en">
+		    <change>[Fix] Don't break the quotes when there are multiple "postID'ed" quoted.</change>
+		</changelog>
+	    </entry>
+	    <entry>
+		<date>2010-12-05</date>
+		<rev-version>2.0.0.1</rev-version>
+		<changelog lang="en">
+		    <change>[Add] Insert the post ID when clicking on the "quote button".</change>
+		    <change>[Add] Insert the post ID when clicking on the "quote button" in topic review.</change>
+		</changelog>
+	    </entry>
+	    <entry>
+		<date>2010-12-02</date>
+		<rev-version>2.0.0</rev-version>
+		<changelog lang="en">
+		    <change>Complete rewrite of the MOD.</change>
+		</changelog>
+	    </entry>
+	</history>
+
+	<link-group>
+	    <link type="contrib" href="../../install.xml" lang="en">Main installation file.</link>
+	</link-group>
+    </header>
+
+    <action-group>
+	<open src="includes/bbcode.php">
+	    <edit>
+		<find><![CDATA['#\[quote(?:=&quot;(.*?)&quot;)?(?:;p=(.*?))?:$uid\]((?!\[quote(?:=&quot;.*?&quot;)?(?:;p=([0-9]+))?:$uid\]).)?#ise'    => "\$this->qpbl->bbcode_second_pass_quote('\$1', '\$2', '\$3')",]]></find>
+		<action type="replace-with"><![CDATA['#\[quote(?:=&quot;(.*?)&quot;)?(?:;p=([0-9]+))?:$uid\]((?!\[quote(?:=&quot;.*?&quot;)?(?:;p=([0-9]+))?:$uid\]).)?#ise' => "\$this->qpbl->bbcode_second_pass_quote('\$1', '\$2', '\$3')",]]></action>
+	    </edit>
+	</open>
+    </action-group>
+</mod>
