@@ -2,7 +2,8 @@
 /**
  *
  * @package acp
- * @copyright (c) 2010 Erik Frèrejean ( N/A )
+ * @author Erik Frèrejean (Erik Frèrejean) erikfrerejean@phpbb.com
+ * @copyright (c) 2012 Erik Frèrejean ( N/A )
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  */
@@ -20,16 +21,29 @@ if (!defined('IN_PHPBB'))
  */
 class acp_qpbl
 {
-	private $error = array(),
-			$id,
-			$mode;
+	private $error = array();
+	private $id;
+	private $mode;
+
+	private $new_config;
+
+	private $config;
+	private $template;
+	private $user;
 
 	public $u_action;
 
-	public function main($id, $mode)
+	public function __construct()
 	{
 		global $config, $template, $user;
 
+		$this->config	= $config;
+		$this->template	= $template;
+		$this->user		= $user;
+	}
+
+	public function main($id, $mode)
+	{
 		$this->id	= $id;
 		$this->mode	= $mode;
 		$submit		= (isset($_REQUEST['submit'])) ? true : false;
@@ -43,7 +57,7 @@ class acp_qpbl
 		);
 		
 		// Fetch the result
-		$this->new_config = $config;
+		$this->new_config = $this->config;
 		$cfg_array = (isset($_REQUEST['config'])) ? utf8_normalize_nfc(request_var('config', array('' => ''), true)) : $this->new_config;
 
 		// We validate the complete config if whished
@@ -52,7 +66,7 @@ class acp_qpbl
 		// Form key
 		if ($submit && !check_form_key(__FILE__))
 		{
-			$this->error[] = $user->lang['FORM_INVALID'];
+			$this->error[] = $this->user->lang['FORM_INVALID'];
 		}
 
 		if (sizeof($this->error))
@@ -70,8 +84,8 @@ class acp_qpbl
 					continue;
 				}
 
-				$this->new_config[$k] = $config_value = $cfg_array[$k];
-				set_config($k, $config_value);
+				$this->new_config[$k] = $this->config_value = $cfg_array[$k];
+				set_config($k, $this->config_value);
 			}
 		}
 
@@ -80,9 +94,9 @@ class acp_qpbl
 		$this->tpl_name = 'acp_board';
 
 		// Common stuff
-		$template->assign_vars(array(
-			'L_TITLE'			=> $user->lang('ACP_QPBL'),
-			'L_TITLE_EXPLAIN'	=> $user->lang('ACP_QPBL_EXPLAIN'),
+		$this->template->assign_vars(array(
+			'L_TITLE'			=> $this->user->lang('ACP_QPBL'),
+			'L_TITLE_EXPLAIN'	=> $this->user->lang('ACP_QPBL_EXPLAIN'),
 
 			'S_ERROR'			=> (sizeof($this->error)) ? true : false,
 			'ERROR_MSG'			=> implode('<br />', $this->error),
@@ -100,9 +114,9 @@ class acp_qpbl
 
 			if (strpos($config_key, 'legend') !== false)
 			{
-				$template->assign_block_vars('options', array(
+				$this->template->assign_block_vars('options', array(
 					'S_LEGEND'		=> true,
-					'LEGEND'		=> (isset($user->lang[$_vars])) ? $user->lang[$_vars] : $_vars)
+					'LEGEND'		=> (isset($this->user->lang[$_vars])) ? $this->user->lang[$_vars] : $_vars)
 				);
 
 				continue;
@@ -113,11 +127,11 @@ class acp_qpbl
 			$l_explain = '';
 			if ($_vars['explain'] && isset($_vars['lang_explain']))
 			{
-				$l_explain = (isset($user->lang[$_vars['lang_explain']])) ? $user->lang[$_vars['lang_explain']] : $_vars['lang_explain'];
+				$l_explain = (isset($this->user->lang[$_vars['lang_explain']])) ? $this->user->lang[$_vars['lang_explain']] : $_vars['lang_explain'];
 			}
 			else if ($_vars['explain'])
 			{
-				$l_explain = (isset($user->lang[$_vars['lang'] . '_EXPLAIN'])) ? $user->lang[$_vars['lang'] . '_EXPLAIN'] : '';
+				$l_explain = (isset($this->user->lang[$_vars['lang'] . '_EXPLAIN'])) ? $this->user->lang[$_vars['lang'] . '_EXPLAIN'] : '';
 			}
 
 			$content = build_cfg_template($type, $config_key, $this->new_config, $config_key, $_vars);
@@ -127,9 +141,9 @@ class acp_qpbl
 				continue;
 			}
 
-			$template->assign_block_vars('options', array(
+			$this->template->assign_block_vars('options', array(
 				'KEY'			=> $config_key,
-				'TITLE'			=> (isset($user->lang[$_vars['lang']])) ? $user->lang[$_vars['lang']] : $_vars['lang'],
+				'TITLE'			=> (isset($this->user->lang[$_vars['lang']])) ? $this->user->lang[$_vars['lang']] : $_vars['lang'],
 				'S_EXPLAIN'		=> $_vars['explain'],
 				'TITLE_EXPLAIN'	=> $l_explain,
 				'CONTENT'		=> $content,
@@ -142,11 +156,9 @@ class acp_qpbl
 
 	public function diplay_select($selected_method, $key = '')
 	{
-		global $user;
-
 		$options = array(
-			'title'	=> $user->lang('QPBL_DISPLAY_TITLE'),
-			'date'	=> $user->lang('QPBL_DISPLAY_DATE'),
+			'title'	=> $this->user->lang('QPBL_DISPLAY_TITLE'),
+			'date'	=> $this->user->lang('QPBL_DISPLAY_DATE'),
 		);
 
 		$result = '';

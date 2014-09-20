@@ -2,7 +2,7 @@
 /**
  *
  * @author Erik Frèrejean (Erik Frèrejean) erikfrerejean@phpbb.com
- * @copyright (c) 2010 2010 Erik Fr??rejean ( N/A )
+ * @copyright (c) 2012 Erik Frèrejean ( N/A )
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
  */
@@ -12,6 +12,7 @@
  */
 define('UMIL_AUTO', true);
 define('IN_PHPBB', true);
+define('IN_INSTALL', true);
 $phpbb_root_path = (defined('PHPBB_ROOT_PATH')) ? PHPBB_ROOT_PATH : './../';
 $phpEx = substr(strrchr(__FILE__, '.'), 1);
 
@@ -54,7 +55,9 @@ $language_file = 'mods/info_acp_qpbl';
 * The version numbering must otherwise be compatible with the version_compare function - http://php.net/manual/en/function.version-compare.php
 */
 $versions = array(
-	'2.0.0.5' => array(
+	'2.1.1'		=> array(),
+	'2.1.0'		=> array(),
+	'2.0.0.5'	=> array(
 
 		'module_add' => array(
 			array('acp', 'ACP_CAT_DOT_MODS', array(
